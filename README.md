@@ -33,7 +33,7 @@ contract holds the collateral, tracks positions and mints/burns mUSD.
   repay and exit.
 - **Stability fee:** debt grows at a fixed per-second rate (`STABILITY_FEE`,
   set at deployment, capped at 10% a year). The deploy script charges 2% a year,
-  and 3.75% on Monad, Monad testnet and Base. Interest is minted to the contract
+  and 3.75% on Monad, Monad testnet, Base and Base Sepolia. Interest is minted to the contract
   as the **surplus**. Anyone can buy surplus
   mUSD with the native coin at the oracle price, less a 0.5% fee, through
   `buy_surplus()`, which is how the extra mUSD that borrowers owe as interest reaches the market. The
@@ -98,6 +98,8 @@ mox run deploy --network sepolia --fork             # dry run against a Sepolia 
 mox run deploy --network sepolia --account <name>   # live deploy + Etherscan verification
 mox run deploy --network base --fork                # dry run against a Base fork
 mox run deploy --network base --account <name>      # live deploy + Basescan verification
+mox run deploy --network base_sepolia --fork        # dry run against a Base Sepolia fork
+mox run deploy --network base_sepolia --account <name>  # live deploy + Basescan verification
 mox run deploy --network monad_testnet --fork       # dry run; local mock feed, nothing sent
 mox run deploy --network monad_testnet --account <name>  # live deploy + Monadscan verification
 mox run verify --network monad_testnet             # re-verify the latest recorded deployment
@@ -105,7 +107,8 @@ mox run verify --network monad_testnet             # re-verify the latest record
 
 Each live network sets `oracle_timeout` under `[networks.<name>.extra_data]`,
 and L2s pin a `sequencer_uptime_feed` contract (the script refuses to deploy to
-Arbitrum or Base without one).
+Arbitrum or Base without one). Chainlink publishes no sequencer feed for Base
+Sepolia, so that testnet deploys without the check.
 
 | Network | Chain ID | Collateral | Chainlink feed | Feed heartbeat | `oracle_timeout` | Sequencer feed |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -113,6 +116,7 @@ Arbitrum or Base without one).
 | Sepolia | 11155111 | ETH | ETH/USD `0x694AA1769357215DE4FAC081bf1f309aDC325306` | 3600s | 4500s | — |
 | Arbitrum One | 42161 | ETH | ETH/USD `0x639Fe6ab55C921f74e7fac1ee960C0B6293ba612` | 1755s | 2400s | `0xFdB631F5EE196F0ed6FAa767959853A9F217697D` |
 | Base | 8453 | ETH | ETH/USD `0x71041dddad3595F9CEd3DcCFBe3D1F4b0a16Bb70` | 1200s | 1800s | `0xBCF85224fc0756B9Fa45aA7892530B47e10b6433` |
+| Base Sepolia | 84532 | ETH | ETH/USD `0x4aDC67696bA383F43DD60A9e78F2C97Fbbfc7cb1` | 1200s | 1800s | — (none published) |
 | Monad | 143 | MON | MON/USD `0xBcD78f76005B7515837af6b50c7C52BCf73822fb` | 3600s | 4500s | — |
 | Monad testnet | 10143 | MON | owner-gated mock at $2000, deployed by the script | — | 365 days | — |
 | Sonic | 146 | S | S/USD `0xc76dFb89fF298145b417d221B2c747d84952e01d` | 86400s | 90000s | — |

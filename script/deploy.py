@@ -3,6 +3,7 @@
     mox run deploy                                      # pyevm, mock price feed
     mox run deploy --network anvil                      # anvil, mock price feed
     mox run deploy --network sepolia --account <name>   # Chainlink price feed
+    mox run deploy --network base_sepolia --account <name>
 
 Collateral is the chain's native coin (ETH, MON on Monad, S on Sonic), priced
 by the `native_usd_price_feed` named contract in moccasin.toml, which must
@@ -47,11 +48,13 @@ SECONDS_PER_YEAR = 365 * 86400
 STABILITY_FEE = 2 * 10**16 // SECONDS_PER_YEAR
 # 3.75% a year. `375 * 10**14` is 3.75e16, so this stays in integers.
 STABILITY_FEE_375 = 375 * 10**14 // SECONDS_PER_YEAR
-# Monad, Monad testnet and Base. Every other network uses `STABILITY_FEE`.
+# Monad, Monad testnet, Base and Base Sepolia. Every other network uses
+# `STABILITY_FEE`.
 STABILITY_FEE_BY_CHAIN_ID = {
     143: STABILITY_FEE_375,
     10143: STABILITY_FEE_375,
     8453: STABILITY_FEE_375,
+    84532: STABILITY_FEE_375,
 }
 ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 ANVIL_CHAIN_ID = 31337
@@ -59,7 +62,8 @@ ANVIL_CHAIN_ID = 31337
 # the deployment is still verified.
 MONAD_TESTNET_CHAIN_ID = 10143
 # Rollups whose sequencer can go down; deploying there needs an uptime feed.
-# 42161 Arbitrum One, 8453 Base.
+# 42161 Arbitrum One, 8453 Base. Base Sepolia (84532) is left out: Chainlink
+# publishes no uptime feed for it, so it deploys without the check.
 L2_CHAIN_IDS = {42161, 8453}
 
 
