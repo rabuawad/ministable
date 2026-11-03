@@ -2,8 +2,18 @@ import boa
 import pytest
 
 from src import factory, ministable
-from tests.utils.constants import ETH, ORACLE_TIMEOUT, ZERO_ADDRESS
-from tests.utils.helpers import deploy_stable, filter_logs
+from tests.mocks.deployers import MOCK_AGGREGATOR
+from tests.utils.constants import (
+    ETH,
+    MAX_STABILITY_FEE,
+    ORACLE_TIMEOUT,
+    POSITION_DEBT,
+    VARIANT_NATIVE,
+    ZERO_ADDRESS,
+)
+from tests.utils.helpers import deploy_stable, filter_logs, to_feed_price
+
+MAX_MINISTABLES = 64
 
 
 @pytest.fixture(scope="module")
@@ -111,3 +121,73 @@ def test_rejects_contract_without_blueprint_preamble(oracle, admin):
     implementation = deploy_stable(oracle.address)
     with boa.reverts(dev="[factory] not an erc-5202 blueprint"):
         factory.deploy(implementation.address, sender=admin)
+
+
+def test_forwards_every_constructor_argument(stable_factory, admin):
+    oracle = MOCK_AGGREGATOR.deploy(to_feed_price(2000), 8)
+    sequencer = MOCK_AGGREGATOR.deploy(0, 0)
+
+    stable = ministable.at(
+        stable_factory.deploy_ministable(
+            "Moon USD", "MOON", 18, "Moon USD", "2",
+            oracle.address, 2400, sequencer.address, MAX_STABILITY_FEE,
+            sender=admin,
+        )
+    )
+
+    assert (stable.name(), stable.symbol(), stable.decimals()) == ("Moon USD", "MOON", 18)
+    assert stable.eip712Domain()[1:3] == ("Moon USD", "2")
+    assert stable.ORACLE() == oracle.address
+    assert stable.ORACLE_TIMEOUT() == 2400
+    assert stable.SEQUENCER_UPTIME_FEED() == sequencer.address
+    assert stable.STABILITY_FEE() == MAX_STABILITY_FEE
+    assert stable.VARIANT() == VARIANT_NATIVE
+    assert stable.rate_index() == 10**18
+
+
+def test_invalid_arguments_revert_the_deploy(stable_factory, oracle, admin):
+    """The blueprint constructor's checks still apply, and nothing is recorded."""
+    with boa.reverts():
+        stable_factory.deploy_ministable(
+            "ministable", "mUSD", 18, "ministable", "1",
+            oracle.address, ORACLE_TIMEOUT, ZERO_ADDRESS, MAX_STABILITY_FEE + 1,
+            sender=admin,
+        )
+
+    assert stable_factory.n_ministables() == 0
+
+
+def test_deployments_are_independent(stable_factory, oracle, admin, borrower):
+    first = ministable.at(_deploy(stable_factory, oracle, admin))
+    second = ministable.at(_deploy(stable_factory, oracle, admin))
+
+    first.deposit(value=2 * ETH, sender=borrower)
+    first.mint(POSITION_DEBT, sender=borrower)
+
+    assert first.address != second.address
+    assert (stable_factory.ministables(0), stable_factory.ministables(1)) == (
+        first.address,
+        second.address,
+    )
+    assert second.collateral(borrower) == 0
+    assert second.totalSupply() == 0
+    # mUSD from one deployment is not accepted by another.
+    with boa.reverts():
+        second.burn(1, sender=borrower)
+
+
+def test_unrelated_address_is_not_a_ministable(stable_factory, oracle):
+    assert not stable_factory.is_ministable(oracle.address)
+    assert not stable_factory.is_ministable(ZERO_ADDRESS)
+
+
+def test_deployment_limit(stable_factory, oracle, admin):
+    assert stable_factory.MAX_MINISTABLES() == MAX_MINISTABLES
+    for _ in range(MAX_MINISTABLES):
+        _deploy(stable_factory, oracle, admin)
+    assert stable_factory.n_ministables() == MAX_MINISTABLES
+
+    with boa.reverts(dev="[factory] deployment limit reached"):
+        _deploy(stable_factory, oracle, admin)
+
+    assert stable_factory.n_ministables() == MAX_MINISTABLES
