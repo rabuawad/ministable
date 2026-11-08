@@ -3,7 +3,7 @@
 """
 @title Test harness for the `cdp_erc20` module
 @notice Wires `cdp_erc20` into a stablecoin the same way
-        `src/ministable.vy` wires `cdp_native`, so the
+        `src/mUSD.vy` wires `cdp_native`, so the
         module can be tested before a production contract
         uses it.
 """

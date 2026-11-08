@@ -1,8 +1,8 @@
-"""Verify an already-deployed ministable (mUSD) on the block explorer.
+"""Verify an already-deployed mUSD on the block explorer.
 
     mox run verify --network arbitrum
 
-Targets the latest ministable deployment moccasin recorded for the network
+Targets the latest mUSD deployment moccasin recorded for the network
 (in .deployments.db), e.g. when `mox run deploy` succeeded but verification
 failed. Sends no transactions.
 """
@@ -20,18 +20,18 @@ from script.deploy import (
     _stability_fee,
     _verify,
 )
-from src import ministable
+from src import mUSD
 
 
 def verify() -> VyperContract:
     network = get_active_network()
-    deployed = network.get_latest_contract_unchecked("ministable")
+    deployed = network.get_latest_contract_unchecked("mUSD")
     _require(
         deployed is not None,
-        f"No ministable deployment recorded for network '{network.name}'.",
+        f"No mUSD deployment recorded for network '{network.name}'.",
     )
 
-    stable: VyperContract = ministable.at(deployed.address)
+    stable: VyperContract = mUSD.at(deployed.address)
     feed = _get_price_feed(network)
     timeout = _oracle_timeout(network)
     sequencer = _get_sequencer_feed(network)
@@ -43,7 +43,7 @@ def verify() -> VyperContract:
         *_constructor_args(feed, timeout, sequencer, stability_fee)
     )
     _check_deployment(stable, feed, timeout, sequencer, stability_fee)
-    print(f"Verifying ministable at {stable.address} on '{network.name}'")
+    print(f"Verifying mUSD at {stable.address} on '{network.name}'")
 
     _verify(network, stable)
     return stable

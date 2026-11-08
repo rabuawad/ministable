@@ -8,7 +8,7 @@ contract holds the collateral, tracks positions and mints/burns mUSD.
 
 | File | Contents |
 | --- | --- |
-| `src/ministable.vy` | The deployed token: wires the modules below together and treats plain transfers as deposits |
+| `src/mUSD.vy` | The deployed token: wires the modules below together and treats plain transfers as deposits |
 | `modules/tokens/erc20.vy` | ERC-20 + EIP-2612 permit |
 | `modules/cdp/cdp.vy` | The collateral-agnostic CDP engine: positions, debt, interest, liquidations, redemptions, bad debt, surplus and the oracle. It never moves collateral; its internal functions return what to pay out, and `VARIANT` records which kind of collateral backs it |
 | `modules/cdp/cdp_native.vy` | Wraps `cdp` with the native coin as collateral: receives it via `deposit` and sends it with `raw_call` |
@@ -136,13 +136,13 @@ Monad, Monad testnet, Sonic and Base also need `MAINNET_RPC_URL`,
 `SONIC_RPC_URL` and `BASE_RPC_URL`.
 
 Monad testnet has no Chainlink MON/USD feed, so the live deploy broadcasts
-two contracts: the mock, then ministable. Both are submitted for verification.
+two contracts: the mock, then mUSD. Both are submitted for verification.
 The mock's initial answer is $2000 and stays valid for a year; `set_answer`
 after that is limited to the deploying account.
 
 ## Tests
 
-The tests exercise the modules, not `src/ministable.vy`: each module is
+The tests exercise the modules, not `src/mUSD.vy`: each module is
 deployed inside a small harness contract in `tests/mocks/`.
 
 | Directory | Contents |
@@ -150,7 +150,6 @@ deployed inside a small harness contract in `tests/mocks/`.
 | `tests/unitary/cdp_native/` | One file per behavior: deposit, mint, burn, withdraw, liquidate, redeem, stability fee, oracle, collateral ratio |
 | `tests/unitary/cdp_erc20/` | The same behaviors with ERC-20 collateral, plus fee-on-transfer, no-return and `False`-returning tokens, re-entrant token callbacks, and collateral decimals from 6 to 18 and feed decimals from 0 to 18 |
 | `tests/unitary/erc20/` | The token on its own: transfers, allowances, mint/burn, metadata, permit |
-| `tests/unitary/factory/` | The factory deploying `ministable` from its blueprint |
 | `tests/integration/` | Multi-step `cdp_native` position lifecycles (open/close, rescue, liquidation with bought mUSD) |
 | `tests/fuzz/` | Hypothesis on `cdp_native`: exact mint/withdraw bounds, and a stateful model of interest, liquidations, bad debt, surplus and redemptions checking solvency invariants |
 | `tests/mocks/` | Module harnesses (`cdp_native`, `cdp_erc20`, `erc20`), a mock Chainlink feed, mock collateral tokens, and a contract position holder (rejecting the native coin, reentrancy) |
