@@ -3,7 +3,7 @@
 """
 @title Test harness for the `cdp_native` module
 @notice Wires `cdp_native` into a stablecoin the same way
-        `src/ministable.vy` does, minus the plain-transfer
+        `src/mUSD.vy` does, minus the plain-transfer
         `__default__`, so the module is tested on its own.
 """
 

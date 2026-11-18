@@ -1,0 +1,18 @@
+name	core
+mode	filename
+files	["modules/cdp/cdp.vy", "modules/cdp/cdp_erc20.vy", "modules/cdp/cdp_native.vy", "modules/tokens/erc20.vy"]
+compiler_context	not verified
+passes_planned	3
+mem_before	31
+mem_after	31
+mem_sha	ab6e0c3
+compiler_context	All four modules require ~=0.4.3. Nonreentrancy on: cdp.vy, cdp_native.vy, cdp_erc20.vy; off: erc20.vy. src/ministable.vy and ERC20 harness bind and export the modules. moccasin.toml and pyproject.toml do not pin compiler, optimizer, or EVM settings. Local .venv cannot import vyper. Deployed compiler and build settings not verified.
+pass_1_agents	12/12
+mem_after	47
+mem_sha	ab6e0c3
+pass_2_agents	9/12
+mem_after	48
+mem_sha	ab6e0c3
+pass_3_agents	12/12
+mem_after	50
+mem_sha	ab6e0c3

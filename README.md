@@ -8,7 +8,7 @@ contract holds the collateral, tracks positions and mints/burns mUSD.
 
 | File | Contents |
 | --- | --- |
-| `src/ministable.vy` | The deployed token: wires the modules below together and treats plain transfers as deposits |
+| `src/mUSD.vy` | The deployed token: wires the modules below together and treats plain transfers as deposits |
 | `modules/tokens/erc20.vy` | ERC-20 + EIP-2612 permit |
 | `modules/cdp/cdp.vy` | The collateral-agnostic CDP engine: positions, debt, interest, liquidations, redemptions, bad debt, surplus and the oracle. It never moves collateral; its internal functions return what to pay out, and `VARIANT` records which kind of collateral backs it |
 | `modules/cdp/cdp_native.vy` | Wraps `cdp` with the native coin as collateral: receives it via `deposit` and sends it with `raw_call` |
@@ -33,7 +33,7 @@ contract holds the collateral, tracks positions and mints/burns mUSD.
   repay and exit.
 - **Stability fee:** debt grows at a fixed per-second rate (`STABILITY_FEE`,
   set at deployment, capped at 10% a year). The deploy script charges 2% a year,
-  and 3.75% on Monad, Monad testnet and Base. Interest is minted to the contract
+  and 3.75% on Monad, Monad testnet, Base and Base Sepolia. Interest is minted to the contract
   as the **surplus**. Anyone can buy surplus
   mUSD with the native coin at the oracle price, less a 0.5% fee, through
   `buy_surplus()`, which is how the extra mUSD that borrowers owe as interest reaches the market. The
@@ -98,6 +98,8 @@ mox run deploy --network sepolia --fork             # dry run against a Sepolia 
 mox run deploy --network sepolia --account <name>   # live deploy + Etherscan verification
 mox run deploy --network base --fork                # dry run against a Base fork
 mox run deploy --network base --account <name>      # live deploy + Basescan verification
+mox run deploy --network base_sepolia --fork        # dry run against a Base Sepolia fork
+mox run deploy --network base_sepolia --account <name>  # live deploy + Basescan verification
 mox run deploy --network monad_testnet --fork       # dry run; local mock feed, nothing sent
 mox run deploy --network monad_testnet --account <name>  # live deploy + Monadscan verification
 mox run verify --network monad_testnet             # re-verify the latest recorded deployment
@@ -105,7 +107,8 @@ mox run verify --network monad_testnet             # re-verify the latest record
 
 Each live network sets `oracle_timeout` under `[networks.<name>.extra_data]`,
 and L2s pin a `sequencer_uptime_feed` contract (the script refuses to deploy to
-Arbitrum or Base without one).
+Arbitrum or Base without one). Chainlink publishes no sequencer feed for Base
+Sepolia, so that testnet deploys without the check.
 
 | Network | Chain ID | Collateral | Chainlink feed | Feed heartbeat | `oracle_timeout` | Sequencer feed |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -113,6 +116,7 @@ Arbitrum or Base without one).
 | Sepolia | 11155111 | ETH | ETH/USD `0x694AA1769357215DE4FAC081bf1f309aDC325306` | 3600s | 4500s | — |
 | Arbitrum One | 42161 | ETH | ETH/USD `0x639Fe6ab55C921f74e7fac1ee960C0B6293ba612` | 1755s | 2400s | `0xFdB631F5EE196F0ed6FAa767959853A9F217697D` |
 | Base | 8453 | ETH | ETH/USD `0x71041dddad3595F9CEd3DcCFBe3D1F4b0a16Bb70` | 1200s | 1800s | `0xBCF85224fc0756B9Fa45aA7892530B47e10b6433` |
+| Base Sepolia | 84532 | ETH | ETH/USD `0x4aDC67696bA383F43DD60A9e78F2C97Fbbfc7cb1` | 1200s | 1800s | — (none published) |
 | Monad | 143 | MON | MON/USD `0xBcD78f76005B7515837af6b50c7C52BCf73822fb` | 3600s | 4500s | — |
 | Monad testnet | 10143 | MON | owner-gated mock at $2000, deployed by the script | — | 365 days | — |
 | Sonic | 146 | S | S/USD `0xc76dFb89fF298145b417d221B2c747d84952e01d` | 86400s | 90000s | — |
@@ -132,13 +136,13 @@ Monad, Monad testnet, Sonic and Base also need `MAINNET_RPC_URL`,
 `SONIC_RPC_URL` and `BASE_RPC_URL`.
 
 Monad testnet has no Chainlink MON/USD feed, so the live deploy broadcasts
-two contracts: the mock, then ministable. Both are submitted for verification.
+two contracts: the mock, then mUSD. Both are submitted for verification.
 The mock's initial answer is $2000 and stays valid for a year; `set_answer`
 after that is limited to the deploying account.
 
 ## Tests
 
-The tests exercise the modules, not `src/ministable.vy`: each module is
+The tests exercise the modules, not `src/mUSD.vy`: each module is
 deployed inside a small harness contract in `tests/mocks/`.
 
 | Directory | Contents |
@@ -146,7 +150,6 @@ deployed inside a small harness contract in `tests/mocks/`.
 | `tests/unitary/cdp_native/` | One file per behavior: deposit, mint, burn, withdraw, liquidate, redeem, stability fee, oracle, collateral ratio |
 | `tests/unitary/cdp_erc20/` | The same behaviors with ERC-20 collateral, plus fee-on-transfer, no-return and `False`-returning tokens, re-entrant token callbacks, and collateral decimals from 6 to 18 and feed decimals from 0 to 18 |
 | `tests/unitary/erc20/` | The token on its own: transfers, allowances, mint/burn, metadata, permit |
-| `tests/unitary/factory/` | The factory deploying `ministable` from its blueprint |
 | `tests/integration/` | Multi-step `cdp_native` position lifecycles (open/close, rescue, liquidation with bought mUSD) |
 | `tests/fuzz/` | Hypothesis on `cdp_native`: exact mint/withdraw bounds, and a stateful model of interest, liquidations, bad debt, surplus and redemptions checking solvency invariants |
 | `tests/mocks/` | Module harnesses (`cdp_native`, `cdp_erc20`, `erc20`), a mock Chainlink feed, mock collateral tokens, and a contract position holder (rejecting the native coin, reentrancy) |

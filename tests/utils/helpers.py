@@ -1,4 +1,4 @@
-from src import ministable
+from src import mUSD
 from tests.mocks.deployers import CDP_ERC20_HARNESS, CDP_NATIVE_HARNESS, ERC20_HARNESS
 from tests.utils.constants import (
     ETH,
@@ -16,9 +16,8 @@ from tests.utils.constants import (
 
 
 def deploy_stable(oracle, timeout=ORACLE_TIMEOUT, sequencer=ZERO_ADDRESS, fee=0):
-    """The production ministable, for the factory tests. Module tests use the
-    harnesses below."""
-    return ministable.deploy(
+    """The production mUSD contract. Module tests use the harnesses below."""
+    return mUSD.deploy(
         "ministable", "mUSD", 18, "ministable", "1", oracle, timeout, sequencer, fee
     )
 

@@ -1,8 +1,9 @@
-"""Deploy ministable (mUSD).
+"""Deploy mUSD.
 
     mox run deploy                                      # pyevm, mock price feed
     mox run deploy --network anvil                      # anvil, mock price feed
     mox run deploy --network sepolia --account <name>   # Chainlink price feed
+    mox run deploy --network base_sepolia --account <name>
 
 Collateral is the chain's native coin (ETH, MON on Monad, S on Sonic), priced
 by the `native_usd_price_feed` named contract in moccasin.toml, which must
@@ -21,7 +22,7 @@ from boa.explorer import SESSION, Etherscan
 from moccasin.boa_tools import VyperContract
 from moccasin.config import Network, get_active_network
 
-from src import ministable
+from src import mUSD
 
 IAggregatorV3 = boa.load_vyi(
     str(Path(__file__).parents[1] / "modules/cdp/interfaces/IAggregatorV3.vyi")
@@ -35,23 +36,25 @@ EIP712_VERSION = "1"
 
 PRICE_FEED = "native_usd_price_feed"
 SEQUENCER_FEED = "sequencer_uptime_feed"
-# ministable scales answers up to 18 decimals, so feeds can't report more.
+# mUSD scales answers up to 18 decimals, so feeds can't report more.
 MAX_PRICE_FEED_DECIMALS = 18
 # Used on local networks only; live networks must set `oracle_timeout`.
 DEV_ORACLE_TIMEOUT = 3600
-# Mirrors `ministable.SEQUENCER_GRACE_PERIOD`.
+# Mirrors `mUSD.SEQUENCER_GRACE_PERIOD`.
 SEQUENCER_GRACE_PERIOD = 3600
 # Seconds in a 365-day year. The per-second rate is the annual rate divided by this.
 SECONDS_PER_YEAR = 365 * 86400
-# 2% a year, as the 1e18-scaled per-second rate ministable expects.
+# 2% a year, as the 1e18-scaled per-second rate mUSD expects.
 STABILITY_FEE = 2 * 10**16 // SECONDS_PER_YEAR
 # 3.75% a year. `375 * 10**14` is 3.75e16, so this stays in integers.
 STABILITY_FEE_375 = 375 * 10**14 // SECONDS_PER_YEAR
-# Monad, Monad testnet and Base. Every other network uses `STABILITY_FEE`.
+# Monad, Monad testnet, Base and Base Sepolia. Every other network uses
+# `STABILITY_FEE`.
 STABILITY_FEE_BY_CHAIN_ID = {
     143: STABILITY_FEE_375,
     10143: STABILITY_FEE_375,
     8453: STABILITY_FEE_375,
+    84532: STABILITY_FEE_375,
 }
 ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 ANVIL_CHAIN_ID = 31337
@@ -59,7 +62,8 @@ ANVIL_CHAIN_ID = 31337
 # the deployment is still verified.
 MONAD_TESTNET_CHAIN_ID = 10143
 # Rollups whose sequencer can go down; deploying there needs an uptime feed.
-# 42161 Arbitrum One, 8453 Base.
+# 42161 Arbitrum One, 8453 Base. Base Sepolia (84532) is left out: Chainlink
+# publishes no uptime feed for it, so it deploys without the check.
 L2_CHAIN_IDS = {42161, 8453}
 
 
@@ -110,7 +114,7 @@ def _get_price_feed(network: Network) -> ABIContract | VyperContract:
         f"Set it under [networks.{network.name}.contracts.{PRICE_FEED}] in moccasin.toml.",
     )
     feed = network.manifest_named(PRICE_FEED, abi=IAggregatorV3)
-    # The mock is a contract we just deployed; verify it alongside ministable.
+    # The mock is a contract we just deployed; verify it alongside mUSD.
     if not pinned and not _is_dev_network(network):
         _verify(network, feed)
     return feed
@@ -125,7 +129,7 @@ def _check_price_feed(feed: ABIContract | VyperContract, timeout: int):
     decimals = feed.decimals()
     _require(
         decimals <= MAX_PRICE_FEED_DECIMALS,
-        f"Price feed reports {decimals} decimals, ministable supports at most {MAX_PRICE_FEED_DECIMALS}.",
+        f"Price feed reports {decimals} decimals, mUSD supports at most {MAX_PRICE_FEED_DECIMALS}.",
     )
 
     _, answer, _, updated_at, _ = feed.latestRoundData()
@@ -133,7 +137,7 @@ def _check_price_feed(feed: ABIContract | VyperContract, timeout: int):
     age = boa.env.timestamp - updated_at
     _require(
         age <= timeout,
-        f"Price feed answer is {age}s old (max {timeout}s); ministable would revert on every price read.",
+        f"Price feed answer is {age}s old (max {timeout}s); mUSD would revert on every price read.",
     )
     print(
         f"Price feed {feed.address}: ${answer / 10**decimals:,.2f}, updated {age}s ago"
@@ -168,7 +172,7 @@ def _check_sequencer_feed(feed: ABIContract):
     print(f"Sequencer uptime feed {feed.address}: up for {up_for}s")
 
 
-# ================= ministable =================
+# ================= mUSD =================
 
 
 def _constructor_args(
@@ -279,7 +283,7 @@ def deploy() -> VyperContract:
         _check_sequencer_feed(sequencer)
 
     print(f"Stability fee: {stability_fee} per second")
-    stable: VyperContract = ministable.deploy(
+    stable: VyperContract = mUSD.deploy(
         *_constructor_args(feed, timeout, sequencer, stability_fee)
     )
     _check_deployment(stable, feed, timeout, sequencer, stability_fee)

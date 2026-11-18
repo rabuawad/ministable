@@ -1,8 +1,8 @@
 # pragma version ~=0.4.3
 # pragma nonreentrancy on
 """
-@title ministable: stablecoin (mUSD) backed by the native coin
-@custom:contract-name ministable
+@title mUSD: stablecoin backed by the native coin
+@custom:contract-name mUSD
 @notice The CDP engine lives in the token itself, through the
         `cdp_native` module. Users lock the chain's native coin
         via `deposit` or a plain transfer, and mint mUSD

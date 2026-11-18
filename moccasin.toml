@@ -91,6 +91,23 @@ address = "0x71041dddad3595F9CEd3DcCFBe3D1F4b0a16Bb70"
 [networks.base.contracts.sequencer_uptime_feed]
 address = "0xBCF85224fc0756B9Fa45aA7892530B47e10b6433"
 
+[networks.base_sepolia]
+url = "${BASE_SEPOLIA_RPC_URL}"
+chain_id = 84532
+explorer_uri = "https://api.etherscan.io/v2/api"
+explorer_type = "etherscan"
+explorer_api_key = "${ETHERSCAN_API_KEY}"
+
+[networks.base_sepolia.extra_data]
+oracle_timeout = 1800  # 1200s heartbeat + 600s, as on Base
+
+# Chainlink ETH/USD (8 decimals). Checked on-chain 2026-11-02.
+[networks.base_sepolia.contracts.native_usd_price_feed]
+address = "0x4aDC67696bA383F43DD60A9e78F2C97Fbbfc7cb1"
+
+# No `sequencer_uptime_feed`: Chainlink publishes none for Base Sepolia,
+# so this testnet deploys without the sequencer check that Base has.
+
 [networks.monad]
 url = "${MONAD_RPC_URL}"
 chain_id = 143

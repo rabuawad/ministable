@@ -1,4 +1,4 @@
-"""The deployed contract, `src/ministable.vy`. The module tests run against
+"""The deployed contract, `src/mUSD.vy`. The module tests run against
 harnesses; these check what only the production wiring adds: plain transfers
 as deposits, the constructor, and the exact external surface."""
 
@@ -6,7 +6,7 @@ import boa
 import pytest
 from eth.exceptions import Revert
 
-from src import ministable
+from src import mUSD
 from tests.mocks.deployers import MOCK_AGGREGATOR, MOCK_REENTRANT_CALLER
 from tests.utils.constants import (
     ETH,
@@ -55,7 +55,7 @@ def _send(stable, sender, value, data=b""):
 
 
 def test_plain_transfer_is_a_deposit(stable, borrower):
-    """Money Flow: borrower ETH → ministable, with no calldata."""
+    """Money Flow: borrower ETH → mUSD, with no calldata."""
     borrower_eth = boa.env.get_balance(borrower)
 
     computation = _send(stable, borrower, ETH)
@@ -186,7 +186,7 @@ def test_constructor_parameters(admin):
     oracle = MOCK_AGGREGATOR.deploy(to_feed_price(2000), 8)
     sequencer = MOCK_AGGREGATOR.deploy(0, 0)
     with boa.env.prank(admin):
-        stable = ministable.deploy(
+        stable = mUSD.deploy(
             "Moon USD", "MOON", 18, "Moon USD", "2",
             oracle.address, 2400, sequencer.address, MAX_STABILITY_FEE,
         )
