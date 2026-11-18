@@ -41,12 +41,6 @@ EXPECTED_FUNCTIONS = {
 }
 
 
-@pytest.fixture(scope="module")
-def stable(oracle, admin):
-    with boa.env.prank(admin):
-        return deploy_stable(oracle.address)
-
-
 def _send(stable, sender, value, data=b""):
     return boa.env.raw_call(stable.address, sender=sender, value=value, data=data)
 
@@ -54,18 +48,19 @@ def _send(stable, sender, value, data=b""):
 # ================= Plain transfers =================
 
 
-def test_plain_transfer_is_a_deposit(stable, borrower):
+@pytest.mark.parametrize("amount", [1, ETH])
+def test_plain_transfer_is_a_deposit(stable, borrower, amount):
     """Money Flow: borrower ETH → mUSD, with no calldata."""
     borrower_eth = boa.env.get_balance(borrower)
 
-    computation = _send(stable, borrower, ETH)
+    computation = _send(stable, borrower, amount)
     logs = filter_logs(stable, "Deposit", computation)
 
-    assert stable.collateral(borrower) == ETH
-    assert boa.env.get_balance(stable.address) == ETH
-    assert boa.env.get_balance(borrower) == borrower_eth - ETH
+    assert stable.collateral(borrower) == amount
+    assert boa.env.get_balance(stable.address) == amount
+    assert boa.env.get_balance(borrower) == borrower_eth - amount
     assert len(logs) == 1
-    assert (logs[0].user, logs[0].amount) == (borrower, ETH)
+    assert (logs[0].user, logs[0].amount) == (borrower, amount)
 
 
 def test_plain_transfer_of_zero_reverts(stable, borrower):
@@ -83,12 +78,13 @@ def test_plain_transfers_accumulate_with_deposits(stable, borrower):
     assert boa.env.get_balance(stable.address) == 6 * ETH
 
 
-def test_unknown_selector_with_value_is_a_deposit(stable, borrower):
+@pytest.mark.parametrize("amount", [1, ETH])
+def test_unknown_selector_with_value_is_a_deposit(stable, borrower, amount):
     """`__default__` catches any calldata it does not recognise, so ETH sent
     with a mistyped call is credited, not lost."""
-    _send(stable, borrower, ETH, data=bytes.fromhex("deadbeef"))
+    _send(stable, borrower, amount, data=bytes.fromhex("deadbeef"))
 
-    assert stable.collateral(borrower) == ETH
+    assert stable.collateral(borrower) == amount
 
 
 def test_unknown_selector_without_value_reverts(stable, borrower):
@@ -137,7 +133,7 @@ def test_full_lifecycle(stable, oracle, borrower, liquidator, recipient):
 
     # Someone else holds mUSD and redeems against the borrower.
     stable.transfer(recipient, 500 * ETH, sender=borrower)
-    stable.redeem(borrower, 500 * ETH, sender=recipient)
+    stable.redeem(borrower, 500 * ETH, 1, sender=recipient)
     assert stable.debt(borrower) == limit - 500 * ETH
 
     # A liquidator mints its own mUSD and brings the position back to 150%.
@@ -182,13 +178,14 @@ def test_has_no_admin_functions(stable):
     }
 
 
-def test_constructor_parameters(admin):
+@pytest.mark.parametrize("value", [0, 1])
+def test_constructor_parameters(admin, value):
     oracle = MOCK_AGGREGATOR.deploy(to_feed_price(2000), 8)
     sequencer = MOCK_AGGREGATOR.deploy(0, 0)
     with boa.env.prank(admin):
         stable = mUSD.deploy(
             "Moon USD", "MOON", 18, "Moon USD", "2",
-            oracle.address, 2400, sequencer.address, MAX_STABILITY_FEE,
+            oracle.address, 2400, sequencer.address, MAX_STABILITY_FEE, value=value,
         )
 
     assert (stable.name(), stable.symbol(), stable.decimals()) == ("Moon USD", "MOON", 18)
@@ -200,7 +197,8 @@ def test_constructor_parameters(admin):
     assert stable.VARIANT() == VARIANT_NATIVE
     assert stable.owner() == admin
     assert stable.totalSupply() == 0
-    assert boa.env.get_balance(stable.address) == 0
+    assert boa.env.get_balance(stable.address) == value
+    assert stable.collateral(admin) == stable.reserve() == 0
 
 
 def test_stability_fee_above_cap_reverts(oracle):

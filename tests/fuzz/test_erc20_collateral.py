@@ -160,7 +160,7 @@ def test_redemption(
 
         if ratio < MIN_COLLAT_RATIO:
             with boa.reverts(dev="[cdp] position unhealthy"):
-                cdp.redeem(borrower, amount, sender=liquidator)
+                cdp.redeem(borrower, amount, 1, sender=liquidator)
             return
 
         expected = amount * (PRECISION - redemption_fee(ratio)) // price_scaled(
@@ -169,6 +169,9 @@ def test_redemption(
         # Asking for one unit more than the fee curve pays trips the slippage guard.
         with boa.reverts(dev="[cdp] slippage"):
             cdp.redeem(borrower, amount, expected + 1, sender=liquidator)
+
+        if expected == 0:
+            return  # The one-unit minimum above already checked this revert.
 
         liquidator_tokens = token.balanceOf(liquidator)
         paid = cdp.redeem(borrower, amount, expected, sender=liquidator)

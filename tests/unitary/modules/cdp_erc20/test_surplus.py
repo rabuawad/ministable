@@ -158,7 +158,7 @@ def test_buy_more_than_surplus_reverts(surplus_cdp, recipient):
 
 
 def test_buy_zero_reverts(surplus_cdp, recipient):
-    with boa.reverts(dev="[cdp] zero purchase"):
+    with boa.reverts(dev="[cdp_erc20] amount must be greater than zero (0)."):
         surplus_cdp.buy_surplus(0, sender=recipient)
 
 
@@ -262,5 +262,5 @@ def test_cover_without_reserve_reverts(cdp, oracle, borrower_position, funded_li
 
 
 def test_cover_zero_reverts(cdp, funded_liquidator):
-    with boa.reverts(dev="[cdp] zero cover"):
+    with boa.reverts(dev="[cdp_erc20] amount must be greater than zero (0)."):
         cdp.cover_bad_debt(0, sender=funded_liquidator)

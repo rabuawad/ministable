@@ -67,7 +67,7 @@ exports: (
 @payable
 def __init__(
     name_: String[25],
-    symbol_: String[5],
+    symbol_: String[15],
     decimals_: uint8,
     name_eip712_: String[50],
     version_eip712_: String[20],

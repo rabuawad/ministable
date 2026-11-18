@@ -139,7 +139,7 @@ def test_redeem(market, position, liquidator):
     # The position is at 300%: a 2% fee.
     expected = amount * (PRECISION - redemption_fee(TOKENS * PRECISION)) // price
 
-    paid = cdp.redeem(position, amount, sender=liquidator)
+    paid = cdp.redeem(position, amount, 1, sender=liquidator)
 
     assert paid == expected
     assert market["unit"] * 98 // 100 - 1 <= paid <= market["unit"]

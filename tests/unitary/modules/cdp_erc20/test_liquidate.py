@@ -96,7 +96,7 @@ def test_small_repay_improves_ratio(cdp, oracle, borrower_position, funded_liqui
 def test_zero_repay_reverts(cdp, oracle, borrower_position, funded_liquidator):
     oracle.set_answer(PARTIAL_PRICE)
 
-    with boa.reverts(dev="[cdp] zero repay"):
+    with boa.reverts(dev="[cdp_erc20] max repay amount must be greater than zero (0)."):
         cdp.liquidate(borrower_position, 0, sender=funded_liquidator)
 
 

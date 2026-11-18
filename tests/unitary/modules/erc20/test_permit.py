@@ -5,40 +5,12 @@ from eth_account import Account
 from eth_utils import keccak
 
 from tests.utils.constants import ETH
-
-PERMIT_TYPES = {
-    "Permit": [
-        {"name": "owner", "type": "address"},
-        {"name": "spender", "type": "address"},
-        {"name": "value", "type": "uint256"},
-        {"name": "nonce", "type": "uint256"},
-        {"name": "deadline", "type": "uint256"},
-    ]
-}
+from tests.utils.permit import sign_permit
 
 
 @pytest.fixture(scope="module")
 def signer():
     return Account.create()
-
-
-def _sign_permit(musd, signer, spender, value, deadline, nonce=None):
-    _, name, version, chain_id, verifying_contract, _, _ = musd.eip712Domain()
-    domain = {
-        "name": name,
-        "version": version,
-        "chainId": chain_id,
-        "verifyingContract": verifying_contract,
-    }
-    message = {
-        "owner": signer.address,
-        "spender": spender,
-        "value": value,
-        "nonce": musd.nonces(signer.address) if nonce is None else nonce,
-        "deadline": deadline,
-    }
-    signed = Account.sign_typed_data(signer.key, domain, PERMIT_TYPES, message)
-    return signed.v, signed.r.to_bytes(32, "big"), signed.s.to_bytes(32, "big")
 
 
 EIP712_DOMAIN_TYPE_HASH = keccak(
@@ -52,7 +24,7 @@ def _deadline():
 
 def test_permit_sets_allowance(musd, signer, recipient):
     deadline = _deadline()
-    v, r, s = _sign_permit(musd, signer, recipient, 100 * ETH, deadline)
+    v, r, s = sign_permit(musd, signer, recipient, 100 * ETH, deadline)
 
     musd.permit(
         signer.address, recipient, 100 * ETH, deadline, v, r, s, sender=recipient
@@ -64,7 +36,7 @@ def test_permit_sets_allowance(musd, signer, recipient):
 
 def test_permit_replay_reverts(musd, signer, recipient):
     deadline = _deadline()
-    v, r, s = _sign_permit(musd, signer, recipient, 100 * ETH, deadline)
+    v, r, s = sign_permit(musd, signer, recipient, 100 * ETH, deadline)
     musd.permit(signer.address, recipient, 100 * ETH, deadline, v, r, s)
 
     with boa.reverts(dev="[erc20] invalid signature"):
@@ -73,7 +45,7 @@ def test_permit_replay_reverts(musd, signer, recipient):
 
 def test_permit_wrong_value_reverts(musd, signer, recipient):
     deadline = _deadline()
-    v, r, s = _sign_permit(musd, signer, recipient, 100 * ETH, deadline)
+    v, r, s = sign_permit(musd, signer, recipient, 100 * ETH, deadline)
 
     with boa.reverts(dev="[erc20] invalid signature"):
         musd.permit(signer.address, recipient, 101 * ETH, deadline, v, r, s)
@@ -81,7 +53,7 @@ def test_permit_wrong_value_reverts(musd, signer, recipient):
 
 def test_permit_expired_deadline_reverts(musd, signer, recipient):
     deadline = _deadline()
-    v, r, s = _sign_permit(musd, signer, recipient, 100 * ETH, deadline)
+    v, r, s = sign_permit(musd, signer, recipient, 100 * ETH, deadline)
     boa.env.time_travel(seconds=3601)
 
     with boa.reverts(dev="[erc20] expired deadline"):

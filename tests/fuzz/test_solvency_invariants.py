@@ -121,6 +121,9 @@ class SolvencyMachine(RuleBasedStateMachine):
     def _debt(self, actor) -> int:
         return self._debt_of(self.shares[actor])
 
+    def _partial_repay_below_one_share(self, amount, debt) -> bool:
+        return 0 < amount < debt and amount < self._debt_of(1)
+
     def _ratio(self, collateral: int, debt: int) -> int:
         if debt == 0:
             return 2**256 - 1
@@ -191,7 +194,10 @@ class SolvencyMachine(RuleBasedStateMachine):
         actor = self.actors[i]
         self.steps += 1
         debt = self._debt(actor)
-        if amount <= debt and amount <= self.balance[actor]:
+        if self._partial_repay_below_one_share(amount, debt):
+            with boa.reverts(dev="[cdp] repayment below one debt share"):
+                self.cdp.burn(amount, sender=actor)
+        elif amount <= debt and amount <= self.balance[actor]:
             self.cdp.burn(amount, sender=actor)
             self._accrue()
             removed = self.shares[actor] if amount == debt else amount * PRECISION // self.index
@@ -244,19 +250,28 @@ class SolvencyMachine(RuleBasedStateMachine):
         debt, collateral = self._debt(user), self.collateral[user]
         amount = min(amount, self.balance[redeemer])
         if amount == 0:
-            with boa.reverts(dev="[cdp] zero redeem"):
-                self.cdp.redeem(user, amount, sender=redeemer)
+            with boa.reverts(dev="[cdp_native] amount must be greater than zero (0)."):
+                self.cdp.redeem(user, amount, 1, sender=redeemer)
         elif self._ratio(collateral, debt) < MIN_COLLAT_RATIO:
             with boa.reverts(dev="[cdp] position unhealthy"):
-                self.cdp.redeem(user, amount, sender=redeemer)
-        elif amount > debt:
-            with boa.reverts(dev="[cdp] repay exceeds debt"):
-                self.cdp.redeem(user, amount, sender=redeemer)
+                self.cdp.redeem(user, amount, 1, sender=redeemer)
         else:
             ratio = self._ratio(collateral, debt)
             eth = amount * (PRECISION - redemption_fee(ratio)) // (self.feed_price * 10**10)
+            if eth == 0:
+                with boa.reverts(dev="[cdp] slippage"):
+                    self.cdp.redeem(user, amount, 1, sender=redeemer)
+                return
+            if amount > debt:
+                with boa.reverts(dev="[cdp] repay exceeds debt"):
+                    self.cdp.redeem(user, amount, 1, sender=redeemer)
+                return
+            if self._partial_repay_below_one_share(amount, debt):
+                with boa.reverts(dev="[cdp] repayment below one debt share"):
+                    self.cdp.redeem(user, amount, 1, sender=redeemer)
+                return
             redeemer_eth = boa.env.get_balance(redeemer)
-            assert self.cdp.redeem(user, amount, sender=redeemer) == eth
+            assert self.cdp.redeem(user, amount, 1, sender=redeemer) == eth
             self._accrue()
             assert boa.env.get_balance(redeemer) == redeemer_eth + eth
             removed = self.shares[user] if amount == debt else amount * PRECISION // self.index
@@ -342,6 +357,10 @@ class SolvencyMachine(RuleBasedStateMachine):
 
     def _try_liquidate(self, liquidator, user, max_repay):
         debt, collateral = self._debt(user), self.collateral[user]
+        if max_repay == 0:
+            with boa.reverts(dev="[cdp_native] max repay amount must be greater than zero (0)."):
+                self.cdp.liquidate(user, max_repay, sender=liquidator)
+            return
         if self._ratio(collateral, debt) >= MIN_COLLAT_RATIO:
             with boa.reverts(dev="[cdp] position healthy"):
                 self.cdp.liquidate(user, max_repay, sender=liquidator)
@@ -349,11 +368,11 @@ class SolvencyMachine(RuleBasedStateMachine):
         repaid, seized, written_off = liquidation(
             collateral, debt, self.feed_price, max_repay, rate_index=self._index_now()
         )
-        if written_off == 0 and repaid == 0:
-            with boa.reverts(dev="[cdp] zero repay"):
-                self.cdp.liquidate(user, max_repay, sender=liquidator)
-        elif self._closes_position(collateral, debt) and max_repay < repaid:
+        if self._closes_position(collateral, debt) and max_repay < repaid:
             with boa.reverts(dev="[cdp] repay too small"):
+                self.cdp.liquidate(user, max_repay, sender=liquidator)
+        elif written_off == 0 and self._partial_repay_below_one_share(repaid, debt):
+            with boa.reverts(dev="[cdp] repayment below one debt share"):
                 self.cdp.liquidate(user, max_repay, sender=liquidator)
         elif self.balance[liquidator] < repaid:
             with boa.reverts(dev="[erc20] burn amount exceeds balance"):

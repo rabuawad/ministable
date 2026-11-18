@@ -1,6 +1,6 @@
 import boa
 
-from tests.unitary.erc20.conftest import HOLDER_BALANCE
+from .conftest import HOLDER_BALANCE
 from tests.utils.constants import ETH, MAX_UINT256, ZERO_ADDRESS
 from tests.utils.helpers import filter_logs
 

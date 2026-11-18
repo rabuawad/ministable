@@ -104,6 +104,7 @@ def __init__(
 # what arrives as their collateral. Returns the amount credited.
 @external
 def deposit(amount: uint256) -> uint256:
+    assert amount > 0 # dev: [cdp_erc20] amount must be greater than zero (0).
     received: uint256 = self._pull(msg.sender, amount)
     cdp._deposit(msg.sender, received)
     return received
@@ -112,15 +113,19 @@ def deposit(amount: uint256) -> uint256:
 # @dev Withdraws `amount` base units of the caller's collateral.
 @external
 def withdraw(amount: uint256):
+    assert amount > 0 # dev: [cdp_erc20] amount must be greater than zero (0).
     cdp._withdraw(msg.sender, amount)
     self._push(msg.sender, amount)
 
 
 # @dev Liquidates an undercollateralized `user`, repaying up
 # to `max_repay` mUSD of their debt for 110% of it in
-# collateral. See `cdp._liquidate`. Returns the mUSD repaid.
+# collateral. A partial liquidation must retire at least one debt
+# share at the accrued rate. Returns the mUSD repaid.
 @external
 def liquidate(user: address, max_repay: uint256) -> uint256:
+    assert user != empty(address) # dev: [cdp_erc20] cannot liquidate the zero address.
+    assert max_repay > 0 # dev: [cdp_erc20] max repay amount must be greater than zero (0).
     repay: uint256 = 0
     seized: uint256 = 0
     repay, seized = cdp._liquidate(user, max_repay)
@@ -130,10 +135,14 @@ def liquidate(user: address, max_repay: uint256) -> uint256:
 
 # @dev Swaps `amount` of the caller's mUSD for $1 of collateral
 # per mUSD from `user`'s healthy position, less the redemption
-# fee. Reverts if that pays less than `min_paid`. See
+# fee. A partial redemption must retire at least one debt share
+# and pay at least `min_paid` in collateral. See
 # `cdp._redeem`. Returns the collateral paid, in base units.
 @external
 def redeem(user: address, amount: uint256, min_paid: uint256 = 0) -> uint256:
+    assert user != empty(address) # dev: [cdp_erc20] cannot redeem the zero address.
+    assert amount > 0 # dev: [cdp_erc20] amount must be greater than zero (0).
+    assert min_paid > 0 # dev: [cdp_erc20] min paid amount must be greater than zero (0).
     paid: uint256 = cdp._redeem(user, amount, min_paid)
     self._push(msg.sender, paid)
     return paid
@@ -144,6 +153,7 @@ def redeem(user: address, amount: uint256, min_paid: uint256 = 0) -> uint256:
 # oracle price.
 @external
 def cover_bad_debt(amount: uint256) -> uint256:
+    assert amount > 0 # dev: [cdp_erc20] amount must be greater than zero (0).
     paid: uint256 = cdp._cover_bad_debt(amount)
     self._push(msg.sender, paid)
     return paid
@@ -154,6 +164,7 @@ def cover_bad_debt(amount: uint256) -> uint256:
 # price. The collateral paid is kept in the reserve.
 @external
 def buy_surplus(amount: uint256) -> uint256:
+    assert amount > 0 # dev: [cdp_erc20] amount must be greater than zero (0).
     received: uint256 = self._pull(msg.sender, amount)
     return cdp._buy_surplus(received)
 

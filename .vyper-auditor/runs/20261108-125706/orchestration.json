@@ -1,0 +1,287 @@
+{
+  "stamp": "20261108-125706",
+  "bundle": "/Users/rabuawad/Code/dev-container/moon-mint/ministable/core/.vyper-audit-j9wl1q32",
+  "run": "/Users/rabuawad/Code/dev-container/moon-mint/ministable/core/.vyper-auditor/runs/20261108-125706",
+  "pass": 3,
+  "passes": 3,
+  "next_agent": 13,
+  "tasks": [
+    {
+      "pass": 1,
+      "agent": 1,
+      "taskId": "node:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A857a4b49-79dd-49d0-86c8-a94da67b4f7c",
+      "threadId": "thread:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A857a4b49-79dd-49d0-86c8-a94da67b4f7c",
+      "status": "completed"
+    },
+    {
+      "pass": 1,
+      "agent": 2,
+      "taskId": "node:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3Aa999e061-3c1d-4457-afee-d38a20167308",
+      "threadId": "thread:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3Aa999e061-3c1d-4457-afee-d38a20167308",
+      "status": "completed"
+    },
+    {
+      "pass": 1,
+      "agent": 3,
+      "taskId": "node:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3Aed13f15d-3172-4e3d-aa2a-3aa3d823973e",
+      "threadId": "thread:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3Aed13f15d-3172-4e3d-aa2a-3aa3d823973e",
+      "status": "completed"
+    },
+    {
+      "pass": 1,
+      "agent": 4,
+      "taskId": "node:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A3dcd1cce-f165-4e4a-9f46-29e80d9ec537",
+      "threadId": "thread:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A3dcd1cce-f165-4e4a-9f46-29e80d9ec537",
+      "status": "completed"
+    },
+    {
+      "pass": 1,
+      "agent": 5,
+      "taskId": "node:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A794508f3-4b4d-4891-8778-43ec55e78284",
+      "threadId": "thread:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A794508f3-4b4d-4891-8778-43ec55e78284",
+      "status": "completed"
+    },
+    {
+      "pass": 1,
+      "agent": 6,
+      "taskId": "node:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A1432c906-e121-4bec-ba8c-95028a17f09a",
+      "threadId": "thread:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A1432c906-e121-4bec-ba8c-95028a17f09a",
+      "status": "completed"
+    },
+    {
+      "pass": 1,
+      "agent": 7,
+      "taskId": "node:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A972a62dc-1ba9-4217-8d08-896c6cf73e99",
+      "threadId": "thread:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A972a62dc-1ba9-4217-8d08-896c6cf73e99",
+      "status": "completed"
+    },
+    {
+      "pass": 1,
+      "agent": 8,
+      "taskId": "node:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3Abebfa08a-f6ab-4c2f-baca-3426ea5ff38e",
+      "threadId": "thread:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3Abebfa08a-f6ab-4c2f-baca-3426ea5ff38e",
+      "status": "completed"
+    },
+    {
+      "pass": 1,
+      "agent": 9,
+      "taskId": "node:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A51015e79-bb93-4670-b2b2-4fbeebbf7ec6",
+      "threadId": "thread:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A51015e79-bb93-4670-b2b2-4fbeebbf7ec6",
+      "status": "completed"
+    },
+    {
+      "pass": 1,
+      "agent": 10,
+      "taskId": "node:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A0d2f92d7-f295-45ce-a4a5-6d9b40ed9a68",
+      "threadId": "thread:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A0d2f92d7-f295-45ce-a4a5-6d9b40ed9a68",
+      "status": "completed"
+    },
+    {
+      "pass": 1,
+      "agent": 11,
+      "taskId": "node:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A2cf0a1f3-4e2f-4a73-bd05-5a8a985ebb21",
+      "threadId": "thread:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A2cf0a1f3-4e2f-4a73-bd05-5a8a985ebb21",
+      "status": "completed"
+    },
+    {
+      "pass": 1,
+      "agent": 12,
+      "taskId": "node:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3Abda9f138-ca84-449c-98b7-1f6acbf75958",
+      "threadId": "thread:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3Abda9f138-ca84-449c-98b7-1f6acbf75958",
+      "status": "completed"
+    },
+    {
+      "pass": 2,
+      "agent": 1,
+      "taskId": "node:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A79f59b33-30f9-4448-8399-4eda42078ce4",
+      "threadId": "thread:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A79f59b33-30f9-4448-8399-4eda42078ce4",
+      "status": "completed"
+    },
+    {
+      "pass": 2,
+      "agent": 2,
+      "taskId": "node:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A06ce1d54-5053-488f-a854-fb10935e6369",
+      "threadId": "thread:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A06ce1d54-5053-488f-a854-fb10935e6369",
+      "status": "completed"
+    },
+    {
+      "pass": 2,
+      "agent": 3,
+      "taskId": "node:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A85eb7a2c-65d7-4cae-8834-e96da351d060",
+      "threadId": "thread:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A85eb7a2c-65d7-4cae-8834-e96da351d060",
+      "status": "completed"
+    },
+    {
+      "pass": 2,
+      "agent": 4,
+      "taskId": "node:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A98d12e09-7771-41ce-be3f-81be78242c3c",
+      "threadId": "thread:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A98d12e09-7771-41ce-be3f-81be78242c3c",
+      "status": "completed"
+    },
+    {
+      "pass": 2,
+      "agent": 5,
+      "taskId": "node:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A31cb1e8b-338d-4307-bdc7-809b6aa4a8d6",
+      "threadId": "thread:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A31cb1e8b-338d-4307-bdc7-809b6aa4a8d6",
+      "status": "completed"
+    },
+    {
+      "pass": 2,
+      "agent": 6,
+      "taskId": "node:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A75dbf526-a064-4323-a503-4440aefd532b",
+      "threadId": "thread:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A75dbf526-a064-4323-a503-4440aefd532b",
+      "status": "completed"
+    },
+    {
+      "pass": 2,
+      "agent": 7,
+      "taskId": "node:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A49c88486-50fd-414f-835c-f7508ea28955",
+      "threadId": "thread:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A49c88486-50fd-414f-835c-f7508ea28955",
+      "status": "completed"
+    },
+    {
+      "pass": 2,
+      "agent": 8,
+      "taskId": "node:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A85356859-d427-4d1e-b8ea-9a2e954ad2ff",
+      "threadId": "thread:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A85356859-d427-4d1e-b8ea-9a2e954ad2ff",
+      "status": "completed"
+    },
+    {
+      "pass": 2,
+      "agent": 9,
+      "taskId": "node:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3Ae46f429c-728c-4a1b-9dfb-c108e61c1c44",
+      "threadId": "thread:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3Ae46f429c-728c-4a1b-9dfb-c108e61c1c44",
+      "status": "completed"
+    },
+    {
+      "pass": 2,
+      "agent": 10,
+      "taskId": "node:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A83291548-0d2c-43b8-ae0f-0cdf3dc9270f",
+      "threadId": "thread:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A83291548-0d2c-43b8-ae0f-0cdf3dc9270f",
+      "status": "failed",
+      "error": "provider usage limit"
+    },
+    {
+      "pass": 2,
+      "agent": 11,
+      "taskId": "node:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A452ad7e8-c838-4d14-8bae-0da5542ec9b1",
+      "threadId": "thread:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3A452ad7e8-c838-4d14-8bae-0da5542ec9b1",
+      "status": "failed",
+      "error": "provider usage limit"
+    },
+    {
+      "pass": 2,
+      "agent": 12,
+      "taskId": "node:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3Ad6b6ed08-5afa-49de-822e-3abaa2c35ea9",
+      "threadId": "thread:delegated-task:command%3Amcp%3Ab28d5390-e732-444c-9710-0b2c88741b04%3Adelegate-task%3Ad6b6ed08-5afa-49de-822e-3abaa2c35ea9",
+      "status": "failed",
+      "error": "provider usage limit"
+    },
+    {
+      "pass": 3,
+      "agent": 1,
+      "taskId": "node:delegated-task:command%3Amcp%3Aaae294d7-0625-4ffd-a0c2-a042c141bd40%3Adelegate-task%3Aa1701911-31a5-48b8-89a8-f9faf1b0777b",
+      "threadId": "thread:delegated-task:command%3Amcp%3Aaae294d7-0625-4ffd-a0c2-a042c141bd40%3Adelegate-task%3Aa1701911-31a5-48b8-89a8-f9faf1b0777b",
+      "status": "completed"
+    },
+    {
+      "pass": 3,
+      "agent": 2,
+      "taskId": "node:delegated-task:command%3Amcp%3Aaae294d7-0625-4ffd-a0c2-a042c141bd40%3Adelegate-task%3A06e39f43-8dcb-4c21-a60f-2518e65c0897",
+      "threadId": "thread:delegated-task:command%3Amcp%3Aaae294d7-0625-4ffd-a0c2-a042c141bd40%3Adelegate-task%3A06e39f43-8dcb-4c21-a60f-2518e65c0897",
+      "status": "completed"
+    },
+    {
+      "pass": 3,
+      "agent": 3,
+      "taskId": "node:delegated-task:command%3Amcp%3Aaae294d7-0625-4ffd-a0c2-a042c141bd40%3Adelegate-task%3Ad0a25565-31de-4f00-b9cd-310b7d0d475d",
+      "threadId": "thread:delegated-task:command%3Amcp%3Aaae294d7-0625-4ffd-a0c2-a042c141bd40%3Adelegate-task%3Ad0a25565-31de-4f00-b9cd-310b7d0d475d",
+      "status": "completed"
+    },
+    {
+      "pass": 3,
+      "agent": 4,
+      "taskId": "node:delegated-task:command%3Amcp%3Aaae294d7-0625-4ffd-a0c2-a042c141bd40%3Adelegate-task%3Ae7d8fd1e-f3f4-42b7-9cf5-db600732dea1",
+      "threadId": "thread:delegated-task:command%3Amcp%3Aaae294d7-0625-4ffd-a0c2-a042c141bd40%3Adelegate-task%3Ae7d8fd1e-f3f4-42b7-9cf5-db600732dea1",
+      "status": "completed"
+    },
+    {
+      "pass": 3,
+      "agent": 5,
+      "taskId": "node:delegated-task:command%3Amcp%3Aaae294d7-0625-4ffd-a0c2-a042c141bd40%3Adelegate-task%3Ac06f183b-6614-472d-9ae4-78b098345c0f",
+      "threadId": "thread:delegated-task:command%3Amcp%3Aaae294d7-0625-4ffd-a0c2-a042c141bd40%3Adelegate-task%3Ac06f183b-6614-472d-9ae4-78b098345c0f",
+      "status": "completed"
+    },
+    {
+      "pass": 3,
+      "agent": 6,
+      "taskId": "node:delegated-task:command%3Amcp%3Aaae294d7-0625-4ffd-a0c2-a042c141bd40%3Adelegate-task%3A2928280f-2bfa-40ea-8162-0ea20e417b27",
+      "threadId": "thread:delegated-task:command%3Amcp%3Aaae294d7-0625-4ffd-a0c2-a042c141bd40%3Adelegate-task%3A2928280f-2bfa-40ea-8162-0ea20e417b27",
+      "status": "completed"
+    },
+    {
+      "pass": 3,
+      "agent": 7,
+      "taskId": "node:delegated-task:command%3Amcp%3Aaae294d7-0625-4ffd-a0c2-a042c141bd40%3Adelegate-task%3Ae1c7b348-1625-4ab5-9963-bc795c8f506b",
+      "threadId": "thread:delegated-task:command%3Amcp%3Aaae294d7-0625-4ffd-a0c2-a042c141bd40%3Adelegate-task%3Ae1c7b348-1625-4ab5-9963-bc795c8f506b",
+      "status": "completed"
+    },
+    {
+      "pass": 3,
+      "agent": 8,
+      "taskId": "node:delegated-task:command%3Amcp%3Aaae294d7-0625-4ffd-a0c2-a042c141bd40%3Adelegate-task%3Ac0f237b2-8067-433c-8e83-ed27d31ff804",
+      "threadId": "thread:delegated-task:command%3Amcp%3Aaae294d7-0625-4ffd-a0c2-a042c141bd40%3Adelegate-task%3Ac0f237b2-8067-433c-8e83-ed27d31ff804",
+      "status": "completed"
+    },
+    {
+      "pass": 3,
+      "agent": 9,
+      "taskId": "node:delegated-task:command%3Amcp%3Aaae294d7-0625-4ffd-a0c2-a042c141bd40%3Adelegate-task%3A20b35b97-64e9-42d5-b622-2886ca1e52eb",
+      "threadId": "thread:delegated-task:command%3Amcp%3Aaae294d7-0625-4ffd-a0c2-a042c141bd40%3Adelegate-task%3A20b35b97-64e9-42d5-b622-2886ca1e52eb",
+      "status": "completed"
+    },
+    {
+      "pass": 3,
+      "agent": 10,
+      "taskId": "node:delegated-task:command%3Amcp%3Aaae294d7-0625-4ffd-a0c2-a042c141bd40%3Adelegate-task%3A9c1498ae-f058-40b8-bb9b-96de7dd88737",
+      "threadId": "thread:delegated-task:command%3Amcp%3Aaae294d7-0625-4ffd-a0c2-a042c141bd40%3Adelegate-task%3A9c1498ae-f058-40b8-bb9b-96de7dd88737",
+      "status": "completed"
+    },
+    {
+      "pass": 3,
+      "agent": 11,
+      "taskId": "node:delegated-task:command%3Amcp%3Aaae294d7-0625-4ffd-a0c2-a042c141bd40%3Adelegate-task%3A528a5fd3-fcd9-4458-a1eb-e0b836b480ad",
+      "threadId": "thread:delegated-task:command%3Amcp%3Aaae294d7-0625-4ffd-a0c2-a042c141bd40%3Adelegate-task%3A528a5fd3-fcd9-4458-a1eb-e0b836b480ad",
+      "status": "completed"
+    },
+    {
+      "pass": 3,
+      "agent": 12,
+      "taskId": "node:delegated-task:command%3Amcp%3Aaae294d7-0625-4ffd-a0c2-a042c141bd40%3Adelegate-task%3Af9b52e5a-22ff-493a-880d-ff4b844621b7",
+      "threadId": "thread:delegated-task:command%3Amcp%3Aaae294d7-0625-4ffd-a0c2-a042c141bd40%3Adelegate-task%3Af9b52e5a-22ff-493a-880d-ff4b844621b7",
+      "status": "completed"
+    }
+  ],
+  "specialties": [
+    "math-precision",
+    "access-control",
+    "economic-security",
+    "execution-trace",
+    "invariant",
+    "periphery",
+    "first-principles",
+    "asymmetry",
+    "boundary",
+    "numerical-gap",
+    "trust-gap",
+    "flow-gap"
+  ],
+  "status": "complete",
+  "delegate_model": "gpt-6.1-terra",
+  "delegate_reasoning_effort": "high",
+  "skill_version": "4",
+  "report": "/Users/rabuawad/Code/dev-container/moon-mint/ministable/core/.vyper-auditor/runs/20261108-125706/full-report.md",
+  "successful_specialty_reviews": 33,
+  "attempted_specialty_reviews": 36,
+  "temporary_bundle_removed": true
+}

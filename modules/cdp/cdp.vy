@@ -478,7 +478,7 @@ def _settle():
 
 # @dev Cuts `user`'s debt by `amount` mSTABLE. Repaying the
 # whole debt clears every share; a partial repay rounds the
-# shares removed down, in the protocol's favour.
+# shares removed down. A positive repayment must retire at least one share.
 @internal
 def _repay(user: address, amount: uint256):
     d: uint256 = self._debt(user)
@@ -486,6 +486,7 @@ def _repay(user: address, amount: uint256):
     shares: uint256 = self.debt_shares[user]
     if amount < d:
         shares = amount * PRECISION // self.rate_index
+        assert amount == 0 or shares > 0 # dev: [cdp] repayment below one debt share
     self.debt_shares[user] -= shares
     self.total_debt_shares -= shares
 

@@ -45,5 +45,5 @@ def test_deposit_is_per_account(cdp, borrower, liquidator):
 
 
 def test_zero_deposit_reverts(cdp, borrower):
-    with boa.reverts(dev="[cdp] zero deposit"):
+    with boa.reverts(dev="[cdp_native] msg.value must be greater than zero (0)."):
         cdp.deposit(sender=borrower)

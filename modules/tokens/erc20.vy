@@ -91,7 +91,7 @@ name: public(immutable(String[25]))
 # @dev Returns the symbol of the token.
 # @notice See comment on lower case letters
 # above at `name`.
-symbol: public(immutable(String[5]))
+symbol: public(immutable(String[15]))
 
 
 # @dev Returns the decimal places of the token.
@@ -125,7 +125,7 @@ nonces: public(HashMap[address, uint256])
 @payable
 def __init__(
     name_: String[25],
-    symbol_: String[5],
+    symbol_: String[15],
     decimals_: uint8,
     name_eip712_: String[50],
     version_eip712_: String[20],

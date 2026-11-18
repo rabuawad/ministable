@@ -47,7 +47,7 @@ def test_deposit_does_not_mint(cdp, funded_borrower):
 
 
 def test_zero_deposit_reverts(cdp, funded_borrower):
-    with boa.reverts(dev="[cdp] zero deposit"):
+    with boa.reverts(dev="[cdp_erc20] amount must be greater than zero (0)."):
         cdp.deposit(0, sender=funded_borrower)
 
 

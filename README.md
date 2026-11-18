@@ -66,7 +66,7 @@ contract holds the collateral, tracks positions and mints/burns mUSD.
 | --- | --- |
 | `deposit()` / plain transfer | Lock `msg.value` of the native coin as collateral |
 | `mint(amount)` | Mint mUSD against your collateral (ratio ≥ 150%) |
-| `burn(amount)` | Burn mUSD to repay your debt |
+| `burn(amount)` | Burn mUSD to repay your debt. A positive partial payment must retire at least one debt share at the accrued rate. Paying the exact debt clears all shares. |
 | `withdraw(amount)` | Withdraw collateral (ratio must stay ≥ 150%) |
 | `liquidate(user, max_repay)` | Repay up to `max_repay` of `user`'s debt for 110% of it in collateral (ratio < 150%) |
 | `redeem(user, amount, min_paid)` | Burn `amount` mUSD of `user`'s debt for $1 of their collateral each, less a 0.5–5% fee that rises with the ratio (ratio ≥ 150%) |
@@ -142,14 +142,15 @@ after that is limited to the deploying account.
 
 ## Tests
 
-The tests exercise the modules, not `src/mUSD.vy`: each module is
-deployed inside a small harness contract in `tests/mocks/`.
+The mUSD unit tests deploy `src/mUSD.vy`. Module tests use the harness
+contracts in `tests/mocks/`.
 
 | Directory | Contents |
 | --- | --- |
-| `tests/unitary/cdp_native/` | One file per behavior: deposit, mint, burn, withdraw, liquidate, redeem, stability fee, oracle, collateral ratio |
-| `tests/unitary/cdp_erc20/` | The same behaviors with ERC-20 collateral, plus fee-on-transfer, no-return and `False`-returning tokens, re-entrant token callbacks, and collateral decimals from 6 to 18 and feed decimals from 0 to 18 |
-| `tests/unitary/erc20/` | The token on its own: transfers, allowances, mint/burn, metadata, permit |
+| `tests/unitary/tokens/mUSD/` | Production contract wiring, token allowances, and smallest-unit position and reserve accounting |
+| `tests/unitary/modules/cdp_native/` | One file per behavior: deposit, mint, burn, withdraw, liquidate, redeem, stability fee, oracle, collateral ratio |
+| `tests/unitary/modules/cdp_erc20/` | The same behaviors with ERC-20 collateral, plus fee-on-transfer, no-return and `False`-returning tokens, re-entrant token callbacks, and collateral decimals from 6 to 18 and feed decimals from 0 to 18 |
+| `tests/unitary/modules/erc20/` | The token on its own: transfers, allowances, mint/burn, metadata, permit |
 | `tests/integration/` | Multi-step `cdp_native` position lifecycles (open/close, rescue, liquidation with bought mUSD) |
 | `tests/fuzz/` | Hypothesis on `cdp_native`: exact mint/withdraw bounds, and a stateful model of interest, liquidations, bad debt, surplus and redemptions checking solvency invariants |
 | `tests/mocks/` | Module harnesses (`cdp_native`, `cdp_erc20`, `erc20`), a mock Chainlink feed, mock collateral tokens, and a contract position holder (rejecting the native coin, reentrancy) |

@@ -96,7 +96,7 @@ def test_redeem_reentry_reverts(cdp, borrower_position, funded_liquidator):
     cdp.transfer(attacker.address, 100 * ETH, sender=funded_liquidator)
 
     _assert_reentry_blocked(
-        cdp, attacker, cdp.redeem.prepare_calldata(borrower_position, 100 * ETH, 0)
+        cdp, attacker, cdp.redeem.prepare_calldata(borrower_position, 100 * ETH, 1)
     )
 
     assert cdp.debt(borrower_position) == POSITION_DEBT

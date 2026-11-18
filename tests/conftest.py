@@ -53,7 +53,7 @@ def oracle():
     return MOCK_AGGREGATOR.deploy(ETH_USD_PRICE, ORACLE_DECIMALS)
 
 
-# `cdp` is the `cdp_native` harness by default; `tests/unitary/cdp_erc20`
+# `cdp` is the `cdp_native` harness by default; `tests/unitary/modules/cdp_erc20`
 # overrides it (and the position fixtures) with the `cdp_erc20` harness.
 @pytest.fixture(scope="module")
 def cdp(oracle, admin):
