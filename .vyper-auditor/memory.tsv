@@ -30,3 +30,22 @@ modules-cdp-vy|-buy-surplus|coarse-surplus-unbuyable	NEW	1	d3b1d80	Buyers cannot
 modules-cdp-vy|burn|no-full-repay-path	NEW	1	d3b1d80	Borrowers cannot close a position unless the burn lands in the predicted second	LEAD
 modules-cdp-erc20-vy|liquidate|zero-amount-transfer-revert	NEW	1	d3b1d80	A token that rejects zero transfers makes liquidation revert when nothing is sei	LEAD
 src-ministable-vy|-init-|oracle-timeout-below-heartbeat	NEW	1	d3b1d80	The Arbitrum oracle timeout may be shorter than the feed heartbeat	LEAD
+modules-cdp-cdp-erc20-vy|-push|fee-on-transfer-outflow	NEW	1	ab6e0c3	A sender fee consumes other users' collateral	FINDING
+modules-cdp-cdp-erc20-vy|redeem|redemption-net-output-slippage	NEW	1	ab6e0c3	A transfer fee bypasses the redeemer's minimum	FINDING
+modules-cdp-cdp-vy|-liquidate|all-or-nothing-liquidation	NEW	1	ab6e0c3	A large liquidation needs the full repayment	LEAD
+modules-cdp-cdp-vy|-liquidate|coarse-collateral-zero-seize	NEW	1	ab6e0c3	Coarse collateral can round the payout to zero	LEAD
+modules-cdp-cdp-vy|-accrue|caller-driven-compounding	NEW	1	ab6e0c3	Callers choose the frequency of interest updates	LEAD
+modules-cdp-cdp-vy|-accrue|discarded-interest-fractions	NEW	1	ab6e0c3	Each update discards a fractional fee	LEAD
+modules-cdp-cdp-vy|mint|no-minimum-debt	NEW	1	ab6e0c3	Small positions can offer small liquidation rewards	LEAD
+modules-cdp-cdp-vy|burn|no-full-repay-path	NEW	1	ab6e0c3	Interest can leave debt after a quoted repayment	LEAD
+modules-cdp-cdp-vy|-buy-surplus|zero-fee-oracle-swap	NEW	1	ab6e0c3	An old price can overvalue surplus payments	LEAD
+modules-cdp-cdp-vy|-cover-bad-debt|zero-fee-oracle-swap	NEW	1	ab6e0c3	An old price can overpay reserve collateral	LEAD
+modules-cdp-cdp-vy|-redeem|redemption-oracle-lag-extraction	NEW	1	ab6e0c3	An old price can overpay a redemption	LEAD
+modules-cdp-cdp-vy|-buy-surplus|missing-purchase-slippage	NEW	1	ab6e0c3	A price update can reduce the purchase output	LEAD
+modules-cdp-cdp-vy|-price|chainlink-min-answer-clamp	NEW	1	ab6e0c3	An oracle floor can exceed the market price	LEAD
+modules-cdp-cdp-vy|-price|immutable-oracle-no-fallback	NEW	1	ab6e0c3	A retired feed can block price-dependent calls	LEAD
+modules-cdp-cdp-vy|-withdraw|oracle-dependent-withdraw-lock	NEW	1	ab6e0c3	An oracle outage blocks withdrawals that retain debt	LEAD
+modules-cdp-cdp-erc20-vy|liquidate|zero-amount-transfer-revert	NEW	1	ab6e0c3	A token can reject a zero collateral payout	LEAD
+modules-cdp-cdp-vy|-liquidate|zero-share-liquidation	NEW	1	ab6e0c3	A small liquidation can remove zero debt shares	LEAD
+modules-cdp-cdp-vy|-redeem|zero-share-redemption	NEW	1	ab6e0c3	A small redemption can remove zero debt shares	LEAD
+modules-cdp-cdp-vy|-buy-surplus|coarse-surplus-unbuyable	NEW	1	ab6e0c3	A small surplus can fall below one purchase unit	LEAD
