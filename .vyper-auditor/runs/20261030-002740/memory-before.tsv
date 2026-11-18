@@ -1,0 +1,32 @@
+#vyper-auditor-memory v1	key	status	scans	sha	title	kind
+src-ministable-vy|liquidate|unliquidatable-bad-debt	NEW	1	c8d66b8	No liquidator closes a position whose collateral is worth less than its debt	FINDING
+src-ministable-vy|-price|hardcoded-oracle-decimals	NEW	1	c8d66b8	The price scaling assumes an 8-decimal feed	LEAD
+src-ministable-vy|-init-|unguarded-oracle-binding	NEW	1	c8d66b8	The only deploy script binds the immutable oracle to a mock that any caller can 	LEAD
+src-ministable-vy|-price|oracle-timeout-equals-heartbeat	NEW	1	c8d66b8	The oracle timeout equals the feed heartbeat and has no margin	LEAD
+src-ministable-vy|-price|missing-sequencer-uptime-check	NEW	1	c8d66b8	The price read has no L2 sequencer uptime check	LEAD
+src-ministable-vy|-price|chainlink-min-answer-clamp	NEW	1	c8d66b8	The price read does not reject answers at the aggregator min/max bounds	LEAD
+src-ministable-vy|liquidate|all-or-nothing-liquidation	NEW	1	c8d66b8	Liquidation needs the caller to hold the whole debt in one balance	LEAD
+src-ministable-vy|liquidate|full-collateral-seizure	NEW	1	c8d66b8	A borrower at the mint limit loses all surplus ETH after a 1e-8 USD price tick	LEAD
+src-ministable-vy|-price|immutable-oracle-no-fallback	NEW	1	c8d66b8	A retired or paused feed blocks liquidation permanently	LEAD
+src-ministable-vy|mint|no-minimum-debt	NEW	1	c8d66b8	Borrowers can open positions too small to liquidate at a profit	LEAD
+src-ministable-vy|withdraw|oracle-dependent-withdraw-lock	NEW	1	c8d66b8	An oracle outage locks surplus ETH for every borrower with debt	LEAD
+modules-cdp-vy|-liquidate|coarse-collateral-zero-seize	NEW	1	d3b1d80	Liquidators receive zero collateral for coarse high-price collateral	FINDING
+modules-cdp-vy|-buy-surplus|zero-fee-oracle-swap	NEW	1	d3b1d80	Buyers take the oracle lag from the surplus	FINDING
+modules-cdp-vy|-liquidate|solvent-position-bad-debt	NEW	1	d3b1d80	Liquidation books bad debt on positions that cover their debt	FINDING
+modules-cdp-vy|-liquidate|all-or-nothing-liquidation	NEW	1	d3b1d80	Underwater liquidation needs the full repay from one balance	LEAD
+modules-cdp-vy|-redeem|redemption-oracle-lag-extraction	NEW	1	d3b1d80	Redeemers take borrower collateral when the oracle lag exceeds the fee	LEAD
+src-ministable-vy|-init-|unchecked-stablecoin-decimals	NEW	1	d3b1d80	The constructor accepts mUSD decimals other than 18	LEAD
+modules-cdp-vy|-price|chainlink-min-answer-clamp	NEW	1	d3b1d80	The price read accepts answers at the aggregator floor	LEAD
+modules-cdp-vy|-price|immutable-oracle-no-fallback	NEW	1	d3b1d80	A retired feed makes every price-based function fail forever	LEAD
+modules-cdp-vy|mint|no-minimum-debt	NEW	1	d3b1d80	Borrowers can open positions too small to liquidate at a profit	LEAD
+modules-cdp-vy|-withdraw|oracle-dependent-withdraw-lock	NEW	1	d3b1d80	An oracle outage locks surplus collateral for every borrower with debt	LEAD
+modules-cdp-vy|-cover-bad-debt|zero-fee-oracle-swap	NEW	1	d3b1d80	Callers take reserve collateral at the oracle lag	FINDING
+modules-cdp-vy|-buy-surplus|stranded-reserve	NEW	1	d3b1d80	No account can withdraw the reserve unless bad debt appears	LEAD
+modules-cdp-vy|-rate-index|caller-driven-compounding	NEW	1	d3b1d80	Callers can make the stability fee compound every block	LEAD
+modules-cdp-vy|-accrue|caller-driven-compounding	NEW	1	d3b1d80	Any caller compounds interest with mint(0)	LEAD
+modules-cdp-erc20-vy|-push|fee-on-transfer-outflow	NEW	1	d3b1d80	The module measures inflows but trusts outflows	LEAD
+modules-cdp-erc20-vy|liquidate|token-pause-blocks-liquidation	NEW	1	d3b1d80	A paused collateral token makes every liquidation fail	LEAD
+modules-cdp-vy|-buy-surplus|coarse-surplus-unbuyable	NEW	1	d3b1d80	Buyers cannot buy a surplus residue smaller than one collateral unit	LEAD
+modules-cdp-vy|burn|no-full-repay-path	NEW	1	d3b1d80	Borrowers cannot close a position unless the burn lands in the predicted second	LEAD
+modules-cdp-erc20-vy|liquidate|zero-amount-transfer-revert	NEW	1	d3b1d80	A token that rejects zero transfers makes liquidation revert when nothing is sei	LEAD
+src-ministable-vy|-init-|oracle-timeout-below-heartbeat	NEW	1	d3b1d80	The Arbitrum oracle timeout may be shorter than the feed heartbeat	LEAD

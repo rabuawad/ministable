@@ -1,0 +1,16 @@
+name	core
+mode	filename
+files	["modules/cdp/cdp.vy", "modules/cdp/cdp_native.vy", "modules/cdp/cdp_erc20.vy", "modules/tokens/erc20.vy"]
+compiler_context	not verified
+passes_planned	3
+mem_before	31
+mem_after	31
+mem_sha	c17c453
+compiler_context	pragma version ~=0.4.3 in all four files; nonreentrancy on in cdp.vy, cdp_native.vy, cdp_erc20.vy and off in tokens/erc20.vy; no evm-version pragma; no Vyper version pinned in moccasin.toml, pyproject.toml, or uv.lock; compiled version not verified
+pass_1_agents	8/12
+mem_after	44
+mem_sha	c17c453
+pass_2_agents	12/12
+mem_after	55
+mem_sha	c17c453
+pass_3_failed	1

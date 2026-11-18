@@ -30,6 +30,30 @@ modules-cdp-vy|-buy-surplus|coarse-surplus-unbuyable	NEW	1	d3b1d80	Buyers cannot
 modules-cdp-vy|burn|no-full-repay-path	NEW	1	d3b1d80	Borrowers cannot close a position unless the burn lands in the predicted second	LEAD
 modules-cdp-erc20-vy|liquidate|zero-amount-transfer-revert	NEW	1	d3b1d80	A token that rejects zero transfers makes liquidation revert when nothing is sei	LEAD
 src-ministable-vy|-init-|oracle-timeout-below-heartbeat	NEW	1	d3b1d80	The Arbitrum oracle timeout may be shorter than the feed heartbeat	LEAD
+modules-cdp-cdp-vy|-liquidate|underwater-bonus-bad-debt	NEW	1	c17c453	Liquidation writes off the liquidator bonus as bad debt below par	FINDING
+modules-cdp-cdp-vy|-redeem|redemption-fee-ratio-spoof	NEW	1	c17c453	Position owner moves the redemption fee by changing its ratio	FINDING
+modules-cdp-cdp-vy|-accrue|caller-driven-compounding	NEW	1	c17c453	Any caller compounds the stability fee by triggering accrual	LEAD
+modules-cdp-cdp-vy|-init-|unchecked-stablecoin-decimals	NEW	1	c17c453	Constructor never checks mUSD decimals	LEAD
+modules-cdp-cdp-vy|-price|frozen-oracle-decimals	NEW	1	c17c453	Oracle decimals are frozen at deployment	LEAD
+modules-cdp-cdp-erc20-vy|-pull|balance-delta-credit	NEW	1	c17c453	Collateral credit follows any balance increase during transferFrom	LEAD
+modules-cdp-cdp-vy|-buy-surplus|zero-fee-oracle-swap	NEW	1	c17c453	Surplus purchases use the oracle price with one fixed fee	LEAD
+modules-cdp-cdp-vy|-cover-bad-debt|zero-fee-oracle-swap	NEW	1	c17c453	Cover of bad debt pays reserve collateral at the oracle price	LEAD
+modules-cdp-cdp-vy|-redeem|redemption-oracle-lag-extraction	NEW	1	c17c453	Redemption pays collateral at the oracle price	LEAD
+modules-cdp-cdp-vy|-price|chainlink-min-answer-clamp	NEW	1	c17c453	The price read accepts answers at the aggregator floor	LEAD
+modules-cdp-cdp-erc20-vy|-push|fee-on-transfer-outflow	NEW	1	c17c453	The module measures inflows but trusts outflows	LEAD
+modules-cdp-cdp-erc20-vy|redeem|min-paid-gross-amount	NEW	1	c17c453	Redeem checks min_paid before the recipient's token fee	LEAD
+modules-cdp-cdp-native-vy|redeem|unset-slippage-default	NEW	1	c17c453	Redeem defaults min_paid to zero, so no slippage bound applies	LEAD
+modules-cdp-cdp-vy|-price|immutable-oracle-no-fallback	NEW	1	c17c453	A retired feed makes every price-based function fail	LEAD
+modules-cdp-cdp-vy|-withdraw|oracle-dependent-withdraw-lock	NEW	1	c17c453	An oracle outage blocks withdrawals for borrowers with debt	LEAD
+modules-cdp-cdp-vy|-buy-surplus|stranded-reserve	NEW	1	c17c453	Collateral paid for surplus stays locked until bad debt appears	LEAD
+modules-cdp-cdp-vy|-buy-surplus|surplus-sold-with-bad-debt	NEW	1	c17c453	Donated mUSD is sold while bad debt stands unsettled	LEAD
+modules-cdp-cdp-vy|-liquidate|liquidation-oracle-lag-extraction	NEW	1	c17c453	Liquidation seizes more collateral when the oracle reads low	LEAD
+modules-cdp-cdp-vy|-liquidate|solvent-position-bad-debt	NEW	1	c17c453	Liquidation writes off debt on positions that cover it by 2 wei	LEAD
+modules-cdp-cdp-vy|mint|no-minimum-debt	NEW	1	c17c453	Any caller opens a position too small to liquidate profitably	LEAD
+modules-cdp-cdp-vy|burn|no-full-repay-path	NEW	1	c17c453	A burn sized to an earlier debt leaves dust after interest accrues	LEAD
+modules-cdp-cdp-erc20-vy|redeem|unset-slippage-default	NEW	1	c17c453	The ERC-20 redeem also defaults min_paid to zero	LEAD
+modules-cdp-cdp-erc20-vy|liquidate|token-pause-blocks-liquidation	NEW	1	c17c453	A paused collateral token makes every liquidation revert	LEAD
+modules-cdp-cdp-erc20-vy|liquidate|zero-amount-transfer-revert	NEW	1	c17c453	A token that rejects zero transfers makes liquidation revert when nothing is sei	LEAD
 modules-cdp-cdp-erc20-vy|-push|fee-on-transfer-outflow	NEW	1	ab6e0c3	A sender fee consumes other users' collateral	FINDING
 modules-cdp-cdp-erc20-vy|redeem|redemption-net-output-slippage	NEW	1	ab6e0c3	A transfer fee bypasses the redeemer's minimum	FINDING
 modules-cdp-cdp-vy|-liquidate|all-or-nothing-liquidation	NEW	1	ab6e0c3	A large liquidation needs the full repayment	LEAD
