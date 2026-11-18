@@ -27,7 +27,7 @@
 
 
 # @dev We import the `IAggregatorV3` interface
-# for the Chainlink collateral / USD price feed.
+# for the Chainlink collateral / FIAT price feed.
 from .interfaces import IAggregatorV3
 
 
@@ -351,7 +351,7 @@ def _liquidate(user: address, max_repay: uint256) -> (uint256, uint256):
     p: uint256 = self._price()
     d: uint256 = self._debt(user)
     c: uint256 = self.collateral[user]
-    # @dev USD value of the collateral, 1e36-scaled. Floored
+    # @dev FIAT value of the collateral, 1e36-scaled. Floored
     # as in `_collat_ratio`, so `needed` below is positive.
     value: uint256 = c * p // PRECISION * PRECISION
 
@@ -515,9 +515,9 @@ def _debt(user: address) -> uint256:
     return (self.debt_shares[user] * self._rate_index() + PRECISION - 1) // PRECISION
 
 
-# @dev The 1e18-scaled USD value of 1e18 base units of
+# @dev The 1e18-scaled FIAT value of 1e18 base units of
 # the collateral. For 18-decimal collateral this is its
-# USD price at 18 decimals.
+# FIAT price at 18 decimals.
 @view
 @internal
 def _price() -> uint256:
