@@ -40,8 +40,8 @@ uses: erc20
 
 # @dev The kind of collateral backing the positions,
 # set by the module wrapping this one. `NATIVE` is the
-# chain's native coin (`cdp_native`); `ERC20` is an
-# ERC-20 token (`cdp_erc20`).
+# chain's native cryptocurrency (`cdp_native`); `ERC20`
+# is an ERC-20 token (`cdp_erc20`).
 flag Variant:
     NATIVE
     ERC20
@@ -56,7 +56,7 @@ MIN_COLLAT_RATIO: public(constant(uint256)) = 15 * 10**17
 SEQUENCER_GRACE_PERIOD: public(constant(uint256)) = 3600
 
 
-# @dev Collateral a liquidator receives per mUSD repaid, valued
+# @dev Collateral a liquidator receives per mSTABLE repaid, valued
 # at the oracle price, 1e18-scaled (110%: a 10% bonus).
 LIQUIDATION_PENALTY: public(constant(uint256)) = 11 * 10**17
 
@@ -79,7 +79,7 @@ REDEMPTION_FEE_SLOPE: public(constant(uint256)) = 10**16
 MAX_REDEMPTION_FEE: public(constant(uint256)) = 5 * 10**16
 
 
-# @dev Spread the protocol keeps when it sells surplus mUSD or pays
+# @dev Spread the protocol keeps when it sells surplus mSTABLE or pays
 # reserve collateral for bad debt, 1e18-scaled (0.5%). Without it,
 # a caller trades at a lagging oracle price and takes the lag.
 SWAP_FEE: public(constant(uint256)) = 5 * 10**15
@@ -94,7 +94,7 @@ MAX_STABILITY_FEE: public(constant(uint256)) = 10**17 // (365 * 86400)
 PRECISION: constant(uint256) = 10**18
 
 
-# @dev The collateral / USD price feed.
+# @dev The collateral / FIAT price feed.
 ORACLE: public(immutable(IAggregatorV3))
 
 
@@ -104,9 +104,9 @@ ORACLE: public(immutable(IAggregatorV3))
 ORACLE_TIMEOUT: public(immutable(uint256))
 
 
-# @dev Scales an oracle answer to the 1e18-scaled USD
+# @dev Scales an oracle answer to the 1e18-scaled FIAT
 # value of 1e18 base units of the collateral, so that
-# `amount * _price() // 1e18` is the USD value of
+# `amount * _price() // 1e18` is the FIAT value of
 # `amount` base units at 18 decimals, whatever the
 # decimals of the collateral and the feed.
 PRICE_SCALE: immutable(uint256)
@@ -133,7 +133,7 @@ collateral: public(HashMap[address, uint256])
 
 
 # @dev Returns the normalised debt of an `address`.
-# Its debt in mUSD is `debt_shares * rate_index / 1e18`.
+# Its debt in mSTABLE is `debt_shares * rate_index / 1e18`.
 debt_shares: public(HashMap[address, uint256])
 
 
@@ -151,11 +151,11 @@ last_accrual: public(uint256)
 
 
 # @dev Returns the collateral (in base units)
-# paid for surplus mUSD.
+# paid for surplus mSTABLE.
 reserve: public(uint256)
 
 
-# @dev Returns the mUSD in circulation that no position
+# @dev Returns the mSTABLE in circulation that no position
 # owes: debt written off when a position's collateral could not
 # cover it, not yet absorbed by the surplus or reserve.
 bad_debt: public(uint256)
@@ -175,35 +175,35 @@ event Withdraw:
     amount: uint256
 
 
-# @dev Emitted when `user` mints `amount` mUSD
+# @dev Emitted when `user` mints `amount` mSTABLE
 # against their collateral.
 event Mint:
     user: indexed(address)
     amount: uint256
 
 
-# @dev Emitted when `user` burns `amount` mUSD
+# @dev Emitted when `user` burns `amount` mSTABLE
 # to repay their debt.
 event Burn:
     user: indexed(address)
     amount: uint256
 
 
-# @dev Emitted when `amount` mUSD of interest is
+# @dev Emitted when `amount` mSTABLE of interest is
 # minted to the surplus.
 event Accrue:
     amount: uint256
 
 
 # @dev Emitted when `buyer` pays `paid` base units of
-# collateral for `amount` mUSD from the surplus.
+# collateral for `amount` mSTABLE from the surplus.
 event BuySurplus:
     buyer: indexed(address)
     paid: uint256
     amount: uint256
 
 
-# @dev Emitted when `liquidator` burns `repaid` mUSD
+# @dev Emitted when `liquidator` burns `repaid` mSTABLE
 # of `user`'s debt and receives `seized` base units of
 # their collateral. `written_off` is debt the collateral
 # could not cover, moved to `bad_debt`.
@@ -215,7 +215,7 @@ event Liquidate:
     written_off: uint256
 
 
-# @dev Emitted when `redeemer` burns `amount` mUSD of
+# @dev Emitted when `redeemer` burns `amount` mSTABLE of
 # `user`'s debt and receives `paid` base units of their
 # collateral.
 event Redeem:
@@ -225,13 +225,13 @@ event Redeem:
     paid: uint256
 
 
-# @dev Emitted when `amount` mUSD of surplus is burned
+# @dev Emitted when `amount` mSTABLE of surplus is burned
 # against bad debt.
 event Settle:
     amount: uint256
 
 
-# @dev Emitted when `caller` burns `amount` mUSD of
+# @dev Emitted when `caller` burns `amount` mSTABLE of
 # bad debt and receives `paid` base units of collateral
 # from the reserve.
 event CoverBadDebt:
@@ -268,7 +268,7 @@ def __init__(
     self.last_accrual = block.timestamp
 
 
-# @dev Mints `amount` mUSD against the caller's collateral.
+# @dev Mints `amount` mSTABLE against the caller's collateral.
 @external
 def mint(amount: uint256):
     self._accrue()
@@ -280,7 +280,7 @@ def mint(amount: uint256):
     log Mint(user=msg.sender, amount=amount)
 
 
-# @dev Burns `amount` mUSD to repay the caller's debt.
+# @dev Burns `amount` mSTABLE to repay the caller's debt.
 @external
 def burn(amount: uint256):
     self._accrue()
@@ -289,14 +289,14 @@ def burn(amount: uint256):
     log Burn(user=msg.sender, amount=amount)
 
 
-# @dev Returns the mUSD debt of `user`, interest included.
+# @dev Returns the mSTABLE debt of `user`, interest included.
 @view
 @external
 def debt(user: address) -> uint256:
     return self._debt(user)
 
 
-# @dev Returns the mUSD held by the protocol: interest not
+# @dev Returns the mSTABLE held by the protocol: interest not
 # yet sold or spent on bad debt.
 @view
 @external
@@ -332,9 +332,9 @@ def _withdraw(user: address, amount: uint256):
 
 
 # @dev Liquidates an undercollateralized `user`. `msg.sender`
-# repays up to `max_repay` mUSD of their debt and is owed
+# repays up to `max_repay` mSTABLE of their debt and is owed
 # `LIQUIDATION_PENALTY` (110%) of it in collateral. Returns the
-# mUSD repaid and the collateral seized, which the caller sends.
+# mSTABLE repaid and the collateral seized, which the caller sends.
 #
 # If the collateral covers 110% of the debt, the liquidator
 # repays only what brings the position back to 150%, and
@@ -391,8 +391,8 @@ def _liquidate(user: address, max_repay: uint256) -> (uint256, uint256):
     return repay, seized
 
 
-# @dev Swaps `amount` of `msg.sender`'s mUSD for $1 of collateral
-# per mUSD from `user`'s position, at the oracle price,
+# @dev Swaps `amount` of `msg.sender`'s mSTABLE for $1 of collateral
+# per mSTABLE from `user`'s position, at the oracle price,
 # less the redemption fee, which stays with the borrower.
 # This puts a floor under the peg. Only healthy positions
 # can be redeemed; the redeemer picks which, and pays
@@ -414,7 +414,7 @@ def _redeem(user: address, amount: uint256, min_paid: uint256) -> uint256:
     return paid
 
 
-# @dev Burns `amount` mUSD of bad debt from `msg.sender` and
+# @dev Burns `amount` mSTABLE of bad debt from `msg.sender` and
 # takes its value in collateral from the reserve, at the
 # oracle price, less `SWAP_FEE`, which stays in the reserve.
 # Returns the collateral owed, which the caller sends.
@@ -432,11 +432,11 @@ def _cover_bad_debt(amount: uint256) -> uint256:
     return paid
 
 
-# @dev Sells surplus mUSD to `msg.sender` for `paid` base units
+# @dev Sells surplus mSTABLE to `msg.sender` for `paid` base units
 # of collateral, already received, at the oracle price, less
 # `SWAP_FEE`. Interest is minted to the surplus, so this is
 # how it reaches borrowers who need it to repay. The collateral
-# paid is kept in the reserve. Returns the mUSD bought.
+# paid is kept in the reserve. Returns the mSTABLE bought.
 @internal
 def _buy_surplus(paid: uint256) -> uint256:
     self._accrue()
@@ -465,7 +465,7 @@ def _accrue():
         self._settle()
 
 
-# @dev Burns surplus mUSD against bad debt.
+# @dev Burns surplus mSTABLE against bad debt.
 @internal
 def _settle():
     amount: uint256 = min(erc20.balanceOf[self], self.bad_debt)
@@ -476,7 +476,7 @@ def _settle():
     log Settle(amount=amount)
 
 
-# @dev Cuts `user`'s debt by `amount` mUSD. Repaying the
+# @dev Cuts `user`'s debt by `amount` mSTABLE. Repaying the
 # whole debt clears every share; a partial repay rounds the
 # shares removed down, in the protocol's favour.
 @internal
@@ -499,7 +499,7 @@ def _rate_index() -> uint256:
     return self.rate_index + self.rate_index * STABILITY_FEE * elapsed // PRECISION
 
 
-# @dev Shares that represent `amount` mUSD of new debt,
+# @dev Shares that represent `amount` mSTABLE of new debt,
 # rounded up in the protocol's favour.
 @view
 @internal
@@ -508,7 +508,7 @@ def _shares_up(amount: uint256) -> uint256:
     return (amount * PRECISION + index - 1) // index
 
 
-# @dev `user`'s debt in mUSD, rounded up.
+# @dev `user`'s debt in mSTABLE, rounded up.
 @view
 @internal
 def _debt(user: address) -> uint256:
